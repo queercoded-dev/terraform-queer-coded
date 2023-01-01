@@ -3,7 +3,6 @@ resource "cloudflare_pages_project" "queercoded_site" {
   account_id        = var.cloudflare_account_id         # Account ID for the domain, can be found in the dashboard
   name              = var.cloudflare_pages_project_name # Name of the project
   production_branch = var.production_branch             # The branch that will be deployed to production
-
   source {
     type = "github" // The person holding the API token must have access to this repo, link your GitHub account to your Cloudflare account
     config {
@@ -17,8 +16,18 @@ resource "cloudflare_pages_project" "queercoded_site" {
   }
 }
 
-resource "cloudflare_pages_domain" "my-domain" {
+# Create a binding between the project and the domain
+resource "cloudflare_pages_domain" "queercoded_site" {
   account_id   = var.cloudflare_account_id         # Account ID for the domain, can be found in the dashboard
   project_name = var.cloudflare_pages_project_name # Name of the project. This must match the name of the project resource
   domain       = var.domain                        # The domain you want to use
+}
+
+# Create a CNAME record for the domain
+resource "cloudflare_record" "cname" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.domain
+  type    = "CNAME"
+  value   = "${var.cloudflare_pages_project_name}.pages.dev"
+  ttl     = 1
 }
