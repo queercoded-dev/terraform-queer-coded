@@ -13,3 +13,5 @@ variable "github_owner" {}
 variable "github_repo_name" {}
 
 variable "production_branch" {}
+
+variable "discord_invite_link" {}

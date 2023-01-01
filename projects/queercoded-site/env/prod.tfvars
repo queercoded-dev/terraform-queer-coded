@@ -6,3 +6,5 @@ domain                        = "queercoded.dev"
 github_owner      = "queercoded-dev"
 github_repo_name  = "queercoded.dev"
 production_branch = "main"
+
+discord_invite_link = "https://discord.gg/jthQypcFmR"

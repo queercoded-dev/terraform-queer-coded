@@ -12,6 +12,15 @@ resource "cloudflare_pages_project" "queercoded_site" {
       pr_comments_enabled           = true
       deployments_enabled           = true
       production_deployment_enabled = true
+      preview_branch_includes       = ["dev"]
+    }
+  }
+  deployment_configs {
+    production {
+      compatibility_date = "2023-01-01"
+    }
+    preview {
+      compatibility_date = "2023-01-01"
     }
   }
 }
@@ -30,4 +39,28 @@ resource "cloudflare_record" "cname" {
   type    = "CNAME"
   value   = "${var.cloudflare_pages_project_name}.pages.dev"
   ttl     = 1
+  proxied = true
+}
+
+resource "cloudflare_ruleset" "discord_redirect" {
+  zone_id = var.cloudflare_zone_id
+  name    = "Discord Redirect"
+  description = "Redirects /discord to the Discord invite link"
+  kind    = "zone"
+  phase   = "http_request_dynamic_redirect"
+
+  rules {
+    action = "redirect"
+    action_parameters {
+      from_value {
+        status_code           = 301
+        preserve_query_string = false
+        target_url {
+          value = var.discord_invite_link
+        }
+      }
+    }
+    expression = "http.request.uri.path eq \"/discord\" and http.host eq \"${var.domain}\""
+    enabled    = true
+  }
 }
