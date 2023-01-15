@@ -39,15 +39,15 @@ resource "cloudflare_record" "cname" {
   type    = "CNAME"
   value   = "${var.cloudflare_pages_project_name}.pages.dev"
   ttl     = 1
-  proxied = true
+  proxied = true # Required for the discord redirect to work
 }
 
 resource "cloudflare_ruleset" "discord_redirect" {
-  zone_id = var.cloudflare_zone_id
-  name    = "Discord Redirect"
+  zone_id     = var.cloudflare_zone_id
+  name        = "Discord Redirect"
   description = "Redirects /discord to the Discord invite link"
-  kind    = "zone"
-  phase   = "http_request_dynamic_redirect"
+  kind        = "zone"
+  phase       = "http_request_dynamic_redirect"
 
   rules {
     action = "redirect"
